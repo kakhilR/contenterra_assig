@@ -5,6 +5,7 @@ const env =require('dotenv')
 env.config();
 const app = express();
 
+const PORT = process.env.PORT || 8000;
 
 app.get('/', (req, res) =>{
     res.send(JSON.stringify({message:"Hello"}))
@@ -23,4 +24,4 @@ app.use('/api',userRouter);
 
 
 
-app.listen(4000,()=>console.log('server listening on 4000'))
+app.listen(PORT,()=>console.log(`server listening ${PORT}`))

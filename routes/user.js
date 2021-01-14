@@ -105,7 +105,7 @@ class apis{
     filtering(){
         const queryobj = {...this.queryString};
         const excludedfileds = ['page','sort','limit'];
-        excludedfileds.forEach(el => delete queryobj[el]);
+        // excludedfileds.forEach(el => delete queryobj[el]);
         let querystr =JSON.stringify(queryobj);
         querystr = querystr.replace(/\b(gte|gt|lt|lte)\b/g, match =>`&&{match}`);
         this.query.find(JSON.parse(querystr));
@@ -125,7 +125,7 @@ class apis{
 }
 
 // to get users by role and by createdAt
-router.get('/post',async(req,res)=>{
+router.get('/post',paginatedmodel(User),async(req,res)=>{
     try{
         const features = new apis(User.find(),req.query).filtering().sorting();
 
@@ -135,4 +135,13 @@ router.get('/post',async(req,res)=>{
         console.log(err)
     }
 })
+
+// router.get('/search',async(req,res)=>{
+//     try{
+//         const Data = await User.find({
+//             title:{$regex:req.query.search,$options:"i"},
+//         }).sort('-createdAt')
+//     }
+// })
+
 module.exports = router

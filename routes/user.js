@@ -144,4 +144,34 @@ router.get('/post',paginatedmodel(User),async(req,res)=>{
 //     }
 // })
 
+router.get('/',(req,res,next)=>{
+    const pageSize =5;
+    const currentpage = req.query.page> 0 ? req.query.page -1 : 0
+    const sortBy = req.query.sortBy || "role"
+    const orderBy = req.query.orderBy || 'asc'
+
+    const sortquery ={
+        [sortBy]:orderBy
+    }
+
+    User.count().then(usercount=>{
+        if(currentpage*pageSize > usercount){
+            return res.status(400).json([])
+        }
+
+        User.find().limit(pageSize)
+        .skip(currentpage *pageSize)
+        .sort(sortquery).then(users=>{
+            return res.status(200).json({
+                content:users,
+                page:req.query.page || 1,
+                total:usercount,
+                pageSize:pageSize})
+        }).catch((err)=>{
+            console.log(err)
+        })
+    })
+
+})
+
 module.exports = router
